@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Node-Element</title>
+    </head>
+    <body>
+        <div id="first">
+            <div id="second"></div>
+        </div>
+    </body>
+    <script>
+        let element = document.getElementById("first");
+        let id = element.attributes.getNamedItem("id").nodeValue;
+        console.log(id);
+    </script>
+</html>

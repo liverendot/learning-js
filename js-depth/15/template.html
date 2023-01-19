@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+            .msg{
+                font-size: 14px;
+                border-bottom: solid 1px rgb(28, 78, 63);
+                padding:2px;
+            }
+        </style>
+        <script>
+            function message(message)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                msgDiv.className = "msg";
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+            }
+        </script>
+        <script>
+            window.onload = ()=>
+            {
+                console.log(document.documentElement.contains(document.body));
+            }
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

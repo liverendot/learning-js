@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>DOM-Node:文档元素的基类</title>
+    </head>
+    <body>
+        <div>
+            <ul id="item"><li>item 1</li><li>item 2</li><li>item 3</li>
+            </ul>
+        </div>
+    </body>
+    <script>
+        let inodes = document.getElementById("item");
+        console.log(inodes.childNodes.length)
+        for(let inode of inodes.childNodes)
+        {
+            //遍历所有子节点
+            //如果有换行的话,则每个换行符为一个文本类型的子节点,值是空格
+            console.log(`nodeName:${inode.nodeName}, nodeValue:${inode.nodeValue}`);
+        }
+    </script>
+</html>

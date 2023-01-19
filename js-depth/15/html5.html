@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>HTML5</title>
+        <script>
+            console.log(document.characterSet);
+            console.log(document.readyState);
+            window.onload = function(e){
+                console.log(document.readyState);
+
+                let msg = document.querySelector(".msg");
+                //msg.innerHTML = "Hello & welcom, <b>\"reader\"!</b>"
+                msg.innerHTML = "Hello &amp; welcom, <b>&quot;reader&quot;!</b>"
+            }
+        </script>
+    </head>
+    <body>
+        <div class="msg"></div>
+    </body>
+</html>

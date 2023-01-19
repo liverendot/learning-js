@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>node-text</title>
+    </head>
+    <body>
+    </body>
+    <script>
+        let element = document.createElement("div");
+        element.className = "message";
+        let textNode = document.createTextNode("Hello world! ");
+        element.appendChild(textNode);
+        let anotherTextNode = document.createTextNode("Yippee! ");
+        element.appendChild(anotherTextNode);
+        document.body.appendChild(element);
+
+        console.log(typeof("aaa"));
+        console.log(typeof([1,2,3]));
+        console.log(Array.isArray([1,2,3]));
+        let colors = new Array("red","blue","green");
+        console.log(typeof(colors));
+        console.log(Array.isArray(colors));
+        
+    </script>
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>MutationObserver</title>
+    </head>
+    <body>
+    </body>
+    <script>
+        //let observer = new MutationObserver(()=>{console.log("<body> attributes changed");});
+        /* let observer = new MutationObserver(
+            (mutationRecords)=>
+            {
+                console.log(mutationRecords);
+            });
+        observer.observe(document.body,{attributes:true});
+        document.body.setAttribute("foo","bar"); */
+
+        let observer = new MutationObserver(
+            (records,obs)=>
+            {
+                console.log(records);
+                console.log(records.map((x)=>x.oldValue));
+                //obs.disconnect(); //没效果,此时属性已经被改变了3次，回调函数已经被调用,records已经记录了3次改变
+                console.log(obs===observer);
+            }
+        );
+        //observer.observe(document.body,{attributes:true});
+        observer.observe(document.body,{attributeOldValue:true});
+
+        document.body.className="foo";
+        //observer.disconnect();
+        document.body.className="bar";
+        document.body.className="baz";
+
+        /* document.body.className = "foo";
+        //disconnect()比observer的回调更晚加入任务队列
+        //当disconnect()时，第一次改变已经被记录，
+        //且调用了更早加入任务队列的ovserver的回调函数
+        setTimeout(
+            ()=>{
+                observer.disconnect();
+                document.body.className="bar";
+                document.body.className="baz";
+            },0
+        ); */
+
+        
+    </script>
+</html>
