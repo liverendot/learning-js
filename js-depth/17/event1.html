@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+            body{
+                border:1px solid rgba(37, 85, 104, 0.5);
+            }
+        </style>
+        <script>
+            function message(message,style)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+                //样式
+                if(style && typeof(style)==="object") //自定义样式
+                {
+                    for(key in style)
+                    {
+                        msgDiv.style[key] = style[key];
+                    }
+                }
+                else //默认样式
+                {
+                    msgDiv.style.fontSize = "14px";
+                    msgDiv.style.borderBottom = "solid 1px rgb(28,78,63)";
+                    msgDiv.style.padding = "2px";
+                }
+            }
+        </script>
+        <script>
+            window.onload = ()=>
+            {
+                let btn=document.getElementById("myBtn");
+                /* btn.onclick = function(){
+                    console.log(this.id);
+                }; */
+                /* btn.addEventListener("click",()=>{
+                    console.log("this.id");
+                },false); */
+                //再为btn添加一个事件处理程序
+                /* btn.addEventListener("click",()=>{
+                    console.log("Hello world!");
+                },false); */
+
+                /* document.body.addEventListener("click",(event)=>{
+                    console.log(this);
+                    console.log(event.currentTarget===this);
+                    console.log(document.body===this);
+                    console.log(event.target===this);
+                },false); */
+            }
+        </script>
+    </head>
+    <body>
+        <input type="button" value="Click Me" onclick="console.log(event.type)">
+        <input type="button" value="Click Me" onclick="console.log(this.value)">
+        <input type="button" value="Click Me" id="myBtn">
+    </body>
+    <script>
+        /* document.body.onclick=function(event){
+            console.log(this); //this===document.body
+            console.log(event.currentTarget);
+        }; */
+
+        let btn1 = document.getElementById("myBtn");
+        let handler = function(event){
+            console.log(this); //this=== document.body
+            console.log(event.currentTarget);
+            console.log(event.target);
+        };
+        //btn1.addEventListener("click",handler,false);
+        document.body.addEventListener("click",handler,false);
+        //window.addEventListener("click",handler,false);
+        //document.addEventListener("click",handler,false);
+
+        //document.body.addEventListener("click",()=>{console.log(this);},false); //this===window
+
+        //document.body.onclick = (event)=>{console.log(this);}; //this===window
+    </script>
+</html>

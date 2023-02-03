@@ -4,6 +4,12 @@
         <meta charset="utf-8">
         <title>模板</title>
         <style>
+            div.box
+            {
+                background-color: blue;
+                width:100px;
+                height:200px;
+            }
         </style>
         <script>
             function message(message,style)
@@ -32,9 +38,19 @@
         <script>
             window.onload = ()=>
             {
+                let sheet=document.styleSheets[0]
+                let rules = sheet.cssRules;
+                let rule = rules[0];
+                console.log(rule.selectorText);
+                console.log(rule.style.cssText);
+                console.log(rule.style.backgroundColor);
+                console.log(rule.style.width);
+                console.log(rule.style.height);
             }
         </script>
     </head>
     <body>
+        <div class="box"></div>
+        <p></p>
     </body>
 </html>

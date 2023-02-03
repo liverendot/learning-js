@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+        </style>
+        <script>
+            function message(message,style)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+                //样式
+                if(style && typeof(style)==="object") //自定义样式
+                {
+                    for(key in style)
+                    {
+                        msgDiv.style[key] = style[key];
+                    }
+                }
+                else //默认样式
+                {
+                    msgDiv.style.fontSize = "14px";
+                    msgDiv.style.borderBottom = "solid 1px rgb(28,78,63)";
+                    msgDiv.style.padding = "2px";
+                }
+            }
+        </script>
+        <script>
+            window.onload = ()=>
+            {
+                let filter = {
+                    acceptNode(node)
+                    {
+                        return node.tagName.toLowerCase()=="p"?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_SKIP;
+                    }
+                }
+
+                let root=document.body;
+                let iterator = document.createNodeIterator(root,NodeFilter.SHOW_ELEMENT,filter,false);
+
+                let node = iterator.nextNode();
+                while(node!=null)
+                {
+                    console.log(node.tagName);
+                    node=iterator.nextNode();
+                }
+
+
+                ///TreeWalker
+                console.log("TreeWalker: \n");
+                let div = document.getElementById("div1");
+                let walker = document.createTreeWalker(div,NodeFilter.SHOW_ELEMENT,null,false);
+                console.log(walker.root.tagName); console.log(walker.currentNode.tagName);
+                walker.firstChild(); console.log(walker.root.tagName);  console.log(walker.currentNode.tagName);
+                walker.nextSibling(); console.log(walker.root.tagName); console.log(walker.currentNode.tagName);
+                let Tnode = walker.firstChild(); console.log(Tnode.tagName);
+                /* while(Tnode!==null)
+                {
+
+                } */
+            }
+        </script>
+    </head>
+    <body>
+        <p></p>
+        <p></p>
+        <div>
+            <p></p>
+        </div>
+        <div id="div1">
+            <p><b>Hello</b> world!</p>
+            <ul>
+                <li>List item 1</li>
+                <li>List item 2</li>
+                <li>List item 3</li>
+            </ul>
+        </div>
+    </body>
+</html>
