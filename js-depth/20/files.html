@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+        </style>
+        <script>
+            function message(message,style)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+                //样式
+                if(style && typeof(style)==="object") //自定义样式
+                {
+                    for(key in style)
+                    {
+                        msgDiv.style[key] = style[key];
+                    }
+                }
+                else //默认样式
+                {
+                    msgDiv.style.fontSize = "14px";
+                    msgDiv.style.borderBottom = "solid 1px rgb(28,78,63)";
+                    msgDiv.style.padding = "2px";
+                }
+            }
+        </script>
+        <script>
+            window.addEventListener("load",WindowOnLoad);
+            function WindowOnLoad(event)
+            {
+                let filesList = document.getElementById("files-list");
+                filesList.addEventListener("change",(event)=>{
+                    let info = "";
+                    let output = document.getElementById("output");
+                    let progress = document.getElementById("progress");
+                    let files = event.target.files;
+                    let type = "default";
+                    let reader = new FileReader();
+
+                    //console.log(files[0].type);
+                    if(/image/.test(files[0].type))
+                    {
+                        //console.log("none running?");
+                        reader.readAsDataURL(files[0]);
+                        type="image";
+                    }
+                    else
+                    {
+                        reader.readAsText(files[0]);
+                        type="text";
+                    }
+
+                    reader.addEventListener("error",(event)=>{
+                        //console.log(event); //event.target: FileReader
+                        output.innerHTML = "Could not read file, error code is "+
+                            event.target.error.code;
+                    });
+
+                    reader.addEventListener("progress",(event)=>{
+                        //console.log(event);
+                        if(event.lengthComputable)
+                        {
+                            progress.innerHTML = `${event.loaded}/${event.total}`;
+                        }
+                    });
+
+                    reader.addEventListener("load",(event)=>{
+                        console.log(`<img src="${reader.result}">`);
+                        let html="";
+                        switch(type)
+                        {
+                            case "image":
+                                html = `<img src="${reader.result}">`;
+                                break;
+                            case "text":
+                                html = reader.result;
+                                break;
+                        }
+                        
+                        output.innerHTML = html;
+                    });
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <form name="myForm1">
+            <input type="file" multiple="multiple" id="files-list">
+        </form>
+        <div id="output"></div>
+        <div id="progress"></div>
+    </body>
+</html>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+            div.myDiv{
+                background-color: rgba(156, 132, 26, 0.5);
+            }
+            ul.myMenu{
+                border: solid 1px rgba(48, 42, 19, 0.959);
+                margin: 0px;
+                position:absolute;
+                visibility:hidden;
+                background-color: silver;
+            }
+        </style>
+        <script>
+            function message(message,style)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+                //样式
+                if(style && typeof(style)==="object") //自定义样式
+                {
+                    for(key in style)
+                    {
+                        msgDiv.style[key] = style[key];
+                    }
+                }
+                else //默认样式
+                {
+                    msgDiv.style.fontSize = "14px";
+                    msgDiv.style.borderBottom = "solid 1px rgb(28,78,63)";
+                    msgDiv.style.padding = "2px";
+                }
+            }
+        </script>
+        <script>
+            window.addEventListener("load",WindowOnLoad);
+            function WindowOnLoad(event)
+            {
+                let div=document.getElementById("myDiv");
+                div.addEventListener("contextmenu",(event)=>{
+                    console.log(event);
+                    event.preventDefault(); //取消浏览器默认的上下文菜单
+                    let menu=document.getElementById("myMenu");
+                    menu.style.left=event.clientX+"px";
+                    menu.style.top=event.clientY+"px";
+                    menu.style.visibility="visible";
+                });
+
+                document.addEventListener("click",(event)=>{
+                    document.getElementById("myMenu").style.visibility="hidden";
+                });
+            }
+            
+        </script>
+    </head>
+    <body>
+        <div class="myDiv" id="myDiv">Right click or Ctrl+click me to get a custom context menu.
+            Click any where else to get the default context menu.</div>
+        <ul class="myMenu" id="myMenu">
+            <li><a href="http://www.somewhere.com">somewhere</a></li>
+            <li><a href="http://www.wrox.com">Wrox site</a></li>
+            <li><a href="http://www.somewhere-else.com">somewhere-else</a></li>
+        </ul>
+    </body>
+</html>

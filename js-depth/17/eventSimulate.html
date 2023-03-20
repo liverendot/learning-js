@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+        </style>
+        <script>
+            function message(message,style)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+                //样式
+                if(style && typeof(style)==="object") //自定义样式
+                {
+                    for(key in style)
+                    {
+                        msgDiv.style[key] = style[key];
+                    }
+                }
+                else //默认样式
+                {
+                    msgDiv.style.fontSize = "14px";
+                    msgDiv.style.borderBottom = "solid 1px rgb(28,78,63)";
+                    msgDiv.style.padding = "2px";
+                }
+            }
+        </script>
+        <script>
+            window.addEventListener("load",WindowOnLoad);
+            function WindowOnLoad(event)
+            {
+                let btn = document.getElementById("myBtn");
+                btn.addEventListener("click",(event)=>{
+                    console.log(`clientX:${event.clientX}, clientY:${event.clientY}`);
+                });
+
+                //在myBtn按钮上模拟一次click事件
+                let simulateEvent = document.createEvent("MouseEvents");
+                simulateEvent.initMouseEvent("click",true,true,document.defaultView,
+                    0,25,25,30,30,false,false,false,false,0,null);
+                btn.dispatchEvent(simulateEvent); //模拟触发click事件
+            }
+        </script>
+    </head>
+    <body>
+        <button id="myBtn">Click Me</button>
+    </body>
+</html>

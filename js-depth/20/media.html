@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+            div{
+                margin: 10px;
+            }
+        </style>
+        <script>
+            function message(message,style)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+                //样式
+                if(style && typeof(style)==="object") //自定义样式
+                {
+                    for(key in style)
+                    {
+                        msgDiv.style[key] = style[key];
+                    }
+                }
+                else //默认样式
+                {
+                    msgDiv.style.fontSize = "14px";
+                    msgDiv.style.borderBottom = "solid 1px rgb(28,78,63)";
+                    msgDiv.style.padding = "2px";
+                }
+            }
+        </script>
+        <script>
+            window.addEventListener("load",WindowOnLoad);
+            function WindowOnLoad(event)
+            {
+                let videoPlayer = document.getElementById("myVideo");
+                let videoBtn = document.getElementById("video-btn");
+                let videoDuration = document.getElementById("duration");
+                
+                //console.log(videoBtn.textContent);
+
+                //初始化自定义播放按钮
+                if(videoPlayer.paused)
+                {
+                    videoBtn.value="Play"
+                    videoBtn.textContent="Play";
+                }
+                else
+                {
+                    videoBtn.value="Pause"
+                    videoBtn.textContent="Pause";
+                }
+                videoDuration.innerHTML = videoPlayer.duration; //更新时长
+
+                videoBtn.addEventListener("click",(event)=>{
+                    if(videoPlayer.paused)
+                    {
+                        videoPlayer.play();
+                        videoBtn.value="Pause";
+                        videoBtn.textContent="Pause";
+                    }
+                    else
+                    {
+                        videoPlayer.pause();
+                        videoBtn.value="Play";
+                        videoBtn.textContent="Play";
+                    }
+                });
+
+                setInterval(()=>{
+                    curtime.innerHTML = videoPlayer.currentTime;
+                },250);
+
+            }
+        </script>
+    </head>
+    <body>
+        <div class="video">
+            <video id="myVideo" width="480" height="270" controls="true">
+                <source src="./media/2.mp4" type="video/webm; codecs='vp8, vorbis'">
+                <source src="./media/2.mp4" type="video/ogg; codecs='theora, vorbis'">
+                <source src="./media/2.mp4">
+                Video player not avilable.
+            </video>
+            <div style="margin:0;"><button type="button" id="video-btn" value="Play">Play</button></div>
+            <div id="curtime"></div>
+            <div id="duration"></div>
+        </div>
+        <div class="audio">
+            <audio id="myAudio" controls="true">
+                <source src="./media/1.mp3" type="audio/ogg">
+                <source src="./media/1.mp3" type="audio/mpeg">
+                Audio player not available.
+            </audio>
+        </div>
+    </body>
+</html>

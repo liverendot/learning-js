@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>HTML5</title>
+        <script>
+            window.onload = function(e){
+                const range = document.createRange();
+                const newParent = document.createElement('h1');
+
+                range.selectNode(document.querySelector('.header-text'));
+                console.log(range);
+                //查看元素会发现整个span区域被新的节点区域h1包围
+                range.surroundContents(newParent);
+
+                const range2 = document.createRange();
+                range2.selectNode(document.querySelector(".rangeText"));
+                console.log(range2);
+            }
+        </script>
+    </head>
+    <body>
+        <div class="rangeText">
+            <span class="header-text">Put this in a <span>help</span> headline</span>
+            <span>this is a <span>span</span></span>
+        </div>
+        <div></div>
+    </body>
+</html>

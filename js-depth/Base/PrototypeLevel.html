@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+        </style>
+        <script>
+            //枚举对象属性
+            function enumerateObjectProperty()
+            {
+                function Person(){}
+
+                Person.prototype.name = "Nicholas";
+                Person.prototype.age= 29;
+                Person.prototype.job = "Software Engineer";
+                Person.prototype.sayName = function(){
+                    console.log(this.name);
+                };
+
+                console.log(Object.keys(Person)); //[]
+                console.log(Object.keys(Person.prototype)); //(4) ['name', 'age', 'job', 'sayName']
+
+                /*
+                    getOwnPropertyNames只返回检测对象的属性
+                    getOwnPropertyNames和keys的不同:
+                        getOwnPropertyNames()返回所有属性,无论是否可枚举
+                        keys()只返回可枚举的属性
+                */
+                //只返回Person对象的属性,不包含原型
+                console.log(Object.getOwnPropertyNames(Person)); //(5) ['length', 'name', 'arguments', 'caller', 'prototype']
+                //只返回Person.prototype原型对象的属性,不含Person, 
+                //*注意这两个name属性的不同
+                console.log(Object.getOwnPropertyNames(Person.prototype)); //(5) ['constructor', 'name', 'age', 'job', 'sayName']
+                console.log(Person.name);
+                console.log(Person.prototype.name);
+            }
+            //enumerateObjectProperty();
+
+            //重写原型对象
+            function OverridePrototype()
+            {
+                function Person(){};
+                console.log(Person.prototype.constructor);
+                console.log(Object.keys(Person.prototype));
+                console.log(Object.getOwnPropertyNames(Person.prototype));
+
+                /*
+                //修改了prototype属性指向的对象,原prototype指向的原型对象的属性没有了
+                //比如constructor属性(Person.prototype.constructor) 
+                Person.prototype = {
+                    name:"nicholas",
+                    age:29,
+                    job:"Software Engineer",
+                    sayName(){
+                        console.log(this.name);
+                    }
+                };
+
+                console.log(Person.prototype.constructor); //ƒ Object() { [native code] }
+                let friend = new Person()
+                console.log(friend.constructor); //ƒ Object() { [native code] } == friend.__proto__.constructor */
+
+                /*
+                //一种解决方法
+                Person.prototype = {
+                    constructor:Person,
+                    name:"nicholas",
+                    age:29,
+                    job:"Software Engineer",
+                    sayName(){
+                        console.log(this.name);
+                    }
+                };
+                //问题: 使constructor属性变为可枚举,[[Enumerable]]为true
+                //console.log(Object.keys(Person.prototype)); */
+
+                /* //另一种解决方法
+                Person.prototype = Object.assign(Person.prototype,{
+                    name:"nicholas",
+                    age:29,
+                    job:"Software Engineer",
+                    sayName(){
+                        console.log(this.name);
+                    }
+                });
+
+                console.log(Person.prototype.constructor);
+                let friend = new Person()
+                console.log(friend.constructor);
+                //这样解决了constructor变成可枚举问题
+                console.log(Object.keys(Person.prototype)); */
+
+                //关于protoeype属性被覆盖问题
+                /* let friend = new Person();
+                //可以动态修改prototype属性
+                Person.prototype.name = "aaa";
+                Person.prototype.sayName = function(){console.log(this.name);};
+                friend.sayName()
+                //如果修改了prototype的指向
+                Person.prototype = {
+                    constructor:Person,
+                    name:"nicholas",
+                    age:29,
+                    job:"Software Engineer",
+                    sayName(){
+                        console.log(this.name);
+                    }
+                };
+                friend.sayName(); //friend.__proto__依旧还是指向Person.prototype指针被修改前的对象 */
+
+                //上方问题依旧可以使用Object.assign()解决
+                //因为Object.assign()返回第一个参数所指的对象
+                let friend = new Person();
+                //可以动态修改prototype属性
+                Person.prototype.name = "aaa";
+                Person.prototype.sayName = function(){console.log(this.name);};
+                friend.sayName()
+                //此处assign返回了Person.prototype指向的对象,虽然他的属性被修改了覆盖
+                //但Person.prototype依旧还是指向的之前的Person.prototype指向的对象
+                Person.prototype = Object.assign(Person.prototype,{
+                    constructor:Person,
+                    name:"nicholas",
+                    age:29,
+                    job:"Software Engineer",
+                    sayName(){
+                        console.log(this.name);
+                    }
+                });
+                friend.sayName();
+            }
+            //OverridePrototype();
+
+            //原型属性和对象属性
+            function PrototypeAndObject()
+            {
+                function Person(){};
+                Person.prototype = Object.assign(Person.prototype,{
+                    name:"nicholas",
+                    age:29,
+                    job:"Software Engineer",
+                    sayName(){
+                        console.log(this.name);
+                    }
+                });
+
+                let friend = new Person();
+                console.log(friend.name);
+
+                Person.prototype.sayHi = function(){console.log("hi");};
+                console.log(friend.name);
+                friend.sayHi();
+
+                let friend2 = new Person();
+                console.log(friend2.name);
+                friend2.sayHi();
+
+                console.log(`friend.__proto__ === Person.prototype? ${friend.__proto__ === Person.prototype}`);
+                //这样做是给friend对象添加了自己的name属性,会覆盖掉继承于原型链的name属性
+                friend.name = "jack";
+                console.log(friend.name); //jack
+                console.log(friend.__proto__.name); //nicholas
+                console.log(friend2.name); //nicholas
+                //如下,friend有了自己的name属性,fiend2没有
+                console.log("properties in friend: ", Object.getOwnPropertyNames(friend));
+                console.log("properties in friend2: ", Object.getOwnPropertyNames(friend2));
+
+                friend.__proto__.name = "jack";
+                console.log(friend2.name); //jack
+            }
+            //PrototypeAndObject();
+
+            function aboutAssign()
+            {
+                /* let obj1 = {a:1,b:2};
+                let obj2 = {c:3,d:4};
+                let obj3 = Object.assign(obj1,obj2);
+                console.log(obj1===obj3);
+                console.log(obj2===obj3); */
+
+                let s = new String("abcde");
+                console.log(s.length);
+                console.log(s.__proto__);
+                console.log(s.__proto__.length);
+                s.__proto__.length = 10;
+                console.log(s.__proto__);
+                console.log(s.__proto__.length);
+                String.prototype.length=10;
+                console.log(String.prototype.length);
+                console.log(s.__proto__.length);
+            }
+            //aboutAssign();
+            
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

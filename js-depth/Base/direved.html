@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Derived</title>
+        <style>
+        </style>
+        <script>
+            //继承
+            function Derived()
+            {
+                function BaseType()
+                {
+                    this.property = true;
+                }
+
+                BaseType.prototype.getSuperValue = function(){
+                    return this.property;
+                };
+
+                function DerivedType()
+                {
+                    this.subproperty = false;
+                }
+
+                console.log("DerivedType.prototype DerivedType最初的原型(Object类型对象):");
+                console.log(DerivedType.prototype);
+
+                DerivedType.prototype = new BaseType();
+                console.log("DerivedType.prototype DerivedType新的原型(BaseType类型的对象):");
+                console.log(DerivedType.prototype);
+                DerivedType.prototype.getSubValue = function(){
+                    return this.subproperty;
+                };
+                console.log("DerivedType.prototype:");
+                console.log(DerivedType.prototype);
+
+                let baseInstance = new BaseType();
+                console.log("baseInstance.__proto__ === BaseType.prototype: ",
+                    baseInstance.__proto__ === BaseType.prototype);
+                console.log("baseInstance:");
+                console.log(baseInstance);
+                
+                let derivedInstance = new DerivedType();
+                console.log("derivedInstance:");
+                console.log(derivedInstance);
+                console.log("derivedInstance.__proto__ === DerivedType.prototype:",derivedInstance.__proto__ === DerivedType.prototype);
+                console.log("DerivedType.prototype(new BaseType).__proto__ == BaseType.prototype:",
+                            DerivedType.prototype.__proto__ === BaseType.prototype);
+                console.log(derivedInstance.__proto__);
+            }
+            //Derived();
+
+            function WhoIsThis()
+            {
+                function SuperType()
+                {}
+
+                function SubType()
+                {
+                    console.log(this);
+                }
+
+                SubType(); //window.SubType()
+                let subType = new SubType(); //SubType.prototype.constructor() == SubType.Subtype()
+                let superType = new SuperType();
+                SubType.call(superType); //SuperType.construnctor() this==SuperType
+            }
+            //WhoIsThis();
+
+            function constructorStealing()
+            {
+                function SuperType()
+                {
+                    console.log(this);
+                }
+
+                function SubType()
+                {
+                    SuperType.call(this);
+                }
+
+                let instance1 = new SubType();
+                console.log(instance1.__proto__);
+                console.log(instance1 instanceof SubType); //true
+                console.log(instance1 instanceof SuperType); //false
+            }
+            //constructorStealing();
+
+            //组合继承
+            function CombineInherit()
+            {
+                function SuperType(name)
+                {
+                    this.name = name;
+                    this.colors = ["red","blue","green"];
+                }
+
+                SuperType.prototype.sayName = function(){
+                    console.log(this.name);
+                };
+                SuperType.prototype.sayColors = function(){
+                    //console.log("in sayColors: ",this);
+                    console.log(this.colors);
+                };
+
+                function SubType(name,age)
+                {
+                    SuperType.call(this,name); //这里也调用了一次SuperType的构造函数
+                    this.age = age;
+                }
+
+                SubType.prototype = new SuperType(); //这里调用了一次SuperType的构造函数
+                SubType.prototype.sayAge = function()
+                {
+                    console.log(this.age);
+                };
+
+                //console.log(SubType);
+                //console.log(SubType.prototype);
+
+                let instance1 = new SubType("Nicholas",29);
+                //console.log(instance1);
+                console.log(instance1.__proto__); //SubType.prototype == new SuperType()
+                console.log(instance1.__proto__.__proto__); //SuperType.prototype
+                instance1.colors.push("black");
+                instance1.sayColors();
+
+            }
+            //CombineInherit();
+            
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

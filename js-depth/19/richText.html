@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>富文本编辑器</title>
+        <style>
+            div.richedit{
+                margin:10px;
+                background-color: rgba(168, 168, 160, 0.61);
+            }
+            
+            div.editable{
+                border: none;
+                height: 200px;
+                padding: 5px;
+            }
+            div.editable:focus{
+                outline:none; /* 去掉编辑时的粗边框 */
+            }
+
+            iframe.editable{
+                border:0px solid rgba(0, 0, 0, 0.507);
+                margin:0;
+                padding:0;
+                width:100%;
+                height:100%;
+            }
+        </style>
+        <script>
+            function message(message,style)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+                //样式
+                if(style && typeof(style)==="object") //自定义样式
+                {
+                    for(key in style)
+                    {
+                        msgDiv.style[key] = style[key];
+                    }
+                }
+                else //默认样式
+                {
+                    msgDiv.style.fontSize = "14px";
+                    msgDiv.style.borderBottom = "solid 1px rgb(28,78,63)";
+                    msgDiv.style.padding = "2px";
+                }
+            }
+        </script>
+        <script>
+            window.addEventListener("load",WindowOnLoad);
+            function WindowOnLoad(event)
+            {
+                /// ifram richedit
+                frames["richedit"].document.designMode = "on";
+                let richeditBtn1 = document.getElementById("richeditButton1");
+                richeditBtn1.addEventListener("click",(event)=>{
+                    let selection = frames["richedit"].getSelection(); //取得选中对象
+                    let selectedText = selection.toString(); //获得选中文本
+                    console.log(`selectedText: ${selectedText}`);
+                    console.log(`rangeCount: ${selection.rangeCount}`);
+                    let ranges=[];
+                    for(let i = 0; i < selection.rangeCount; i++) {
+                        ranges[i] = selection.getRangeAt(i);
+                        console.log(ranges[i]);
+                    }
+                });
+                //高亮按钮
+                let highLightBtn1 = document.getElementById("highLightButton1");
+                highLightBtn1.addEventListener("click",(event)=>{
+                    let selection = frames["richedit"].getSelection();
+                    let range = selection.getRangeAt(0);
+                    let span = frames["richedit"].document.createElement("span");
+                    span.style.backgroundColor="yellow";
+                    range.surroundContents(span);
+                });
+                //HTML按钮
+                let htmlBtn1 = document.getElementById("htmlButton1");
+                htmlBtn1.addEventListener("click",(event)=>{
+                    console.log(frames["richedit"].document.body.innerHTML);
+                });
+
+
+                /// div contenteditable richedit
+                let editableDiv = document.getElementById("editable");
+                //editableDiv.contentEditable = "true";
+                
+                //Command Button
+                let richeditBtn2 = document.getElementById("richeditButton2");
+                richeditBtn2.addEventListener("click",(event)=>{
+                    let section = document.getSelection();
+                    let selectedText = section.toString();
+                    console.log(`selectedTExt: ${selectedText}`);
+                });
+
+                //HTML按钮
+                let htmlBtn2 = document.getElementById("htmlButton2");
+                htmlBtn2.addEventListener("click",(event)=>{
+                    console.log(editableDiv.innerHTML);
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <div class="richedit">
+            <div class="editable" name="" id="editable1">
+                <iframe class="editable" name="richedit"></iframe>
+            </div>
+            <button type="button" id="richeditButton1">Command</button>
+            <button type="button" id="highLightButton1">HighLight</button>
+            <button type="button" id="htmlButton1">HTML</button>
+        </div>
+        
+        <div class="richedit">
+            <div class="editable" name="editable" id="editable2" contenteditable="true"></div>
+            <button type="button" id="richeditButton2">Command</button>
+            <button type="button" id="highLightButton2">HighLight</button>
+            <button type="button" id="htmlButton2">HTML</button>
+        </div>
+
+        <div>somethingelse text</div>
+    </body>
+</html>

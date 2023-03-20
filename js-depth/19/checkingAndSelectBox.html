@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+            form{
+                margin-top: 20px;
+                border:1px solid rgba(78, 100, 93, 0.753);
+                padding: 5px;
+            }
+
+            form div.addNew{
+                background-color: rgba(199, 192, 183, 0.5);
+                border: 1px solid rgba(31, 30, 30, 0.7);
+                margin-top: 5px;
+                margin-bottom: 5px;
+                padding:5px;
+            }
+        </style>
+        <script>
+            function message(message,style)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+                //样式
+                if(style && typeof(style)==="object") //自定义样式
+                {
+                    for(key in style)
+                    {
+                        msgDiv.style[key] = style[key];
+                    }
+                }
+                else //默认样式
+                {
+                    msgDiv.style.fontSize = "14px";
+                    msgDiv.style.borderBottom = "solid 1px rgb(28,78,63)";
+                    msgDiv.style.padding = "2px";
+                }
+            }
+        </script>
+        <script>
+            window.addEventListener("load",WindowOnLoad);
+            function WindowOnLoad(event)
+            {
+                //form2的选择框
+                let selectbox = document.forms[1].elements["location"];
+                /* selectbox.addEventListener("change",(event)=>{
+                    //console.log(event);
+                    //let text=selectbox.options[0].text;
+                    let text=event.target.options[0].text;
+                    //let value=selectbox.options[0].value;
+                    let value=event.target.options[0].value;
+                    console.log(text);
+                    console.log(value);
+                }); */
+                selectbox.addEventListener("change",(event)=>{
+                    let selectedIndex = event.target.selectedIndex;
+                    let selectedOption = event.target.options[selectedIndex];
+                    console.log(`Selected index: ${selectedIndex}\n` + 
+                                `Selected text: ${selectedOption.text}\n` + 
+                                `Selected value: ${selectedOption.value}`);
+                });
+                
+                //form2
+                let form2=document.getElementById("myForm2");
+                form2.addEventListener("submit",(event)=>{
+                    event.preventDefault(); //阻止默认行为
+                    //console.log(event);
+                    console.log(event.target.elements["location"].value);
+                });
+
+                //form3
+                let form3 = document.getElementById("myForm3");
+                form3.addEventListener("submit",(event)=>{
+                    event.preventDefault();
+                    let selectBox = event.target.elements["pets"];
+                    //console.log(selectBox.selectedIndex); //如果选择多个则只会返回0
+                    //console.log(selectBox.options); //返回所有选项
+                    for(let option of selectBox.options)
+                    {
+                        if(option.selected) //是否选中
+                        {
+                            console.log(option.value);
+                        }
+                    }
+                });
+
+                //form3- add new
+                let form3_addNewBtn = form3.elements["new"];
+                form3_addNewBtn.addEventListener("click",(event)=>{
+                    let form = event.target.form; //获取button所在的form (form3)
+                    //HTMLFormElement.elements return HTMLFormControlsCollection
+                    selectbox = form.elements["pets"] // == HTMLFormControlsCollection.namedItem("pets");
+                    //console.log(form);
+
+                    let petsType = form.elements["petsTypes"].value; //获得option的分组名
+                    
+                    //element.getElementsByTagName() return: HTMLCollection
+                    //HTMLCollection.namedItem()
+                    let insertGroup = selectbox.getElementsByTagName("optgroup").namedItem(petsType); //插入到哪个分组
+                    let value = form.elements["optValue"];
+                    let text = form.elements["optText"];
+
+                    if(value.value && text.value)
+                    {
+                        //console.log(value.value);
+                        //console.log(text.value);
+                        let newOption = document.createElement("option");
+                        newOption.appendChild(document.createTextNode(text.value));
+                        newOption.setAttribute("value",value.value);
+                        insertGroup.appendChild(newOption);
+                        //清空value和text中文本
+                        value.value="";
+                        text.value="";
+                    }
+
+                });
+
+                //form3 - Opt Remove Button
+                let form3_OptRemoveBtn = form3.elements["optrmv"] //获取form中名称为optrmv的控件 (button)
+                form3_OptRemoveBtn.addEventListener("click",(event)=>{
+                    let form = event.target.form; //事件源所在的form
+                    let selectBox = form.elements["pets"];
+                    //console.log(selectBox);
+                    let selectedIndex = selectBox.selectedIndex;
+                    //console.log(selectedIndex);
+                    
+                    //因为有分组，所以不要在selectBox中直接使用removeChild
+                    //可以先获得分组对象然后使用分组对象的removeChild
+                    //selectBox.removeChild(selectBox.options[selectedIndex]);
+                    //因为删除项不需要关心项属于哪个分组
+                    //所以可以使用此方式，避开分组的影响
+                    selectBox.remove(selectedIndex);
+                });
+
+                //form3 - OptGroup Button
+                let form3_OptGroupBtn = form3.elements["optgrp"];
+                form3_OptGroupBtn.addEventListener("click",(event)=>{
+                    console.log(event.target); //Button(optgrp) Object
+                    let form = event.target.form;
+                    selectbox = form.elements["pets"];
+                    //console.log(selectbox);
+                    console.log(selectbox.nodeName); //SELECT
+                    console.log(selectbox.nodeType); //1
+                    //console.log(selectbox.childNodes);
+                    //console.log(selectbox.childNodes.item(1).nodeType) //1
+                    //console.log(selectbox.childNodes.item(1).getAttribute("label")); //4-legged pets
+                    //console.log(selectbox.getElementsByTagName("optgroup"));
+                    //console.log(selectbox.getElementsByTagName("optgroup").namedItem("fourLegsPets"))
+                    console.log(selectbox.options); //HTMLOptionsCollection(6)
+                    let optGroup1 = selectbox.getElementsByTagName("optgroup").namedItem("fourLegsPets");
+                    console.log(optGroup1); //Element Tree code
+                    console.log(optGroup1.options); //Undefined
+                });
+
+                //Free Button
+                let freeButton = document.getElementById("freeButton");
+                freeButton.addEventListener("click",(event)=>{
+                    console.log(event.target);
+                    console.log(event.target.form); //null
+                });
+
+                //Form4 Button
+                let form4 = document.getElementById("myForm4");
+                let form4Btn = form4.elements["form4Button"];
+                form4Btn.addEventListener("click",(event)=>{
+                    console.log(event.target);
+                    console.log(event.target.form); //Form Object (form4)
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <form method="post" id="myForm">
+            <ul>
+                <li><input type="radio" name="color" value="red">Red</li>
+                <li><input type="radio" name="color" value="green">Red</li>
+                <li><input type="radio" name="color" value="blue">Red</li>
+            </ul>
+            <div>
+                Email:<input type="email" name="email" required>
+                Number:<input type="number" min="0" max="100" step="5" name="count">
+                Text-Number:<input type="text" pattern="\d+" name="num">
+            </div>
+            <button type="submit">submit</button>
+        </form>
+
+        <form method="post" id="myForm2">
+            <div>
+                <select name="location" id="selLocation">
+                    <option value="Sunnyvale, CA">Sunnyvale</option>
+                    <option value="Los Angeles, CA">Los Angeles</option>
+                    <option value="Mountain View, CA">Mountain View</option>
+                    <option value="">China</option>
+                    <option>Australia</option>
+                </select>
+            </div>
+            <button type="submit">submit</button>
+        </form>
+
+        <form method="post" id="myForm3">
+            <div>
+                <label>Please choose one or more pets:
+                    <select name="pets" multiple size="12">
+                      <optgroup label="4-legged pets" name="fourLegsPets">
+                        <option value="dog">Dog</option>
+                        <option value="cat">Cat</option>
+                        <option value="hamster" disabled>Hamster</option>
+                      </optgroup>
+                      <optgroup label="Flying pets" name="flyingPets">
+                        <option value="parrot">Parrot</option>
+                        <option value="macaw">Macaw</option>
+                        <option value="albatross">Albatross</option>
+                      </optgroup>
+                    </select>
+                  </label>
+            </div>
+            <div class="addNew">
+                <div>Add New</div>
+                <select name="petsTypes" id="petsTypes">
+                    <option value="fourLegsPets">4-legged pets</option>
+                    <option value="flyingPets">Flying pets</option>
+                </select>
+                <label>Text</label><input type="text" name="optText">
+                <label>Value</label><input type="text" name="optValue">
+            </div>
+            <button type="submit">submit</button>
+            <button type="button" name="new">Add New</button>
+            <button type="button" name="optrmv">Remove</button>
+            <button type="button" name="optgrp">OptGroup</button>
+        </form>
+
+        <div>
+            <button type="button" name="freeButton" id="freeButton">Free Button</button>
+        </div>
+
+        <form method="post" id="myForm4">
+            <button type="button" name="form4Button" id="form4Button">Form4 Button</button>
+        </form>
+    </body>
+</html>

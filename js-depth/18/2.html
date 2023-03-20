@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+            div.page{
+                height: 2000px;
+            }
+        </style>
+        <script>
+            function message(message,style)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+                //样式
+                if(style && typeof(style)==="object") //自定义样式
+                {
+                    for(key in style)
+                    {
+                        msgDiv.style[key] = style[key];
+                    }
+                }
+                else //默认样式
+                {
+                    msgDiv.style.fontSize = "14px";
+                    msgDiv.style.borderBottom = "solid 1px rgb(28,78,63)";
+                    msgDiv.style.padding = "2px";
+                }
+            }
+        </script>
+        <script>
+            window.addEventListener("load",WindowOnLoad); 
+            function WindowOnLoad(event)
+            {
+                let enabled = true;
+                //window.addEventListener("scroll",expensiveOperation);
+                window.addEventListener("scroll",throttle);
+                function expensiveOperation(event)
+                {
+                    console.log("Invoked at",Date.now());
+                }
+                function throttle(event)
+                {
+                    if(enabled)
+                    {
+                        enabled=false;
+                        window.requestAnimationFrame(expensiveOperation);
+                        window.setTimeout(()=>enabled=true,50); //50ms后将enabled设置为true
+                    }
+                }
+            }
+            
+        </script>
+    </head>
+    <body>
+        <div class="page"></div>
+    </body>
+</html>

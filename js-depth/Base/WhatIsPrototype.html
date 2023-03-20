@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>WhatIsProtoType</title>
+        <style>
+        </style>
+        <script>
+            function message(message,style)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+                //样式
+                if(style && typeof(style)==="object") //自定义样式
+                {
+                    for(key in style)
+                    {
+                        msgDiv.style[key] = style[key];
+                    }
+                }
+                else //默认样式
+                {
+                    msgDiv.style.fontSize = "14px";
+                    msgDiv.style.borderBottom = "solid 1px rgb(28,78,63)";
+                    msgDiv.style.padding = "2px";
+                }
+            }
+        </script>
+        <script>
+            window.addEventListener("load",WindowOnLoad);
+            function WindowOnLoad(event)
+            {
+                function Person(){}
+
+                console.log(typeof Person.prototype);
+                console.log(Person.prototype);
+                console.log(Person.prototype.__proto__);
+
+                let person1 = new Person();
+                let person2 = new Person();
+
+                //Person.prototype
+                console.log(person1.__proto__);
+                //Person.prototye.[[prototype]] = Object.prototype
+                console.log(person1.__proto__.__proto__); 
+                //Object.prototype.[[prototype]] = null
+                console.log(person1.__proto__.__proto__.__proto__); //null
+
+                console.log(person1.__proto__ === person2.__proto__); //true;
+
+                //setPrototype
+                console.log("\n Set Prototype:");
+                let biped = {numLegs:2};
+                let person = {name: "Matt"};
+                console.log(biped.__proto__ === Object.prototype); //true
+                console.log(person.__proto__ === Object.prototype); //true
+
+                Object.setPrototypeOf(person,biped);
+                console.log(person.__proto__);
+                console.log(biped.__proto__);
+            }
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

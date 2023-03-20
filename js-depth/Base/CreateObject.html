@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+        </style>
+        <script>
+            function message(message,style)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+                //样式
+                if(style && typeof(style)==="object") //自定义样式
+                {
+                    for(key in style)
+                    {
+                        msgDiv.style[key] = style[key];
+                    }
+                }
+                else //默认样式
+                {
+                    msgDiv.style.fontSize = "14px";
+                    msgDiv.style.borderBottom = "solid 1px rgb(28,78,63)";
+                    msgDiv.style.padding = "2px";
+                }
+            }
+        </script>
+        <script>
+            window.addEventListener("load",WindowOnLoad);
+            function WindowOnLoad(event)
+            {
+                //工厂模式
+                function FactoryModel()
+                {
+                    function createPerson(name,age,job)
+                    {
+                        let o = new Object();
+                        o.name = name;
+                        o.age = age;
+                        o.job = job;
+
+                        o.sayName = function(){
+                            console.log(this.name);
+                        };
+
+                        //工厂模式返回的对象都是Object的对象,
+                        //我们无法区分不同对象的类型
+                        return o;
+                    }
+
+                    let person1 = createPerson("Nicholas",29,"Software Engineer");
+                    let person2 = createPerson("Greg",27,"Doctor");
+
+                    console.log(`person1: ${person1.name}, ${person1.age}, ${person1.job}`);
+                    console.log(`person2: ${person2.name}, ${person2.age}, ${person2.job}`);;
+                }
+                //FactoryModel();
+
+                //构造函数模式
+                function ConstructorModel()
+                {
+                    function Person(name,age,job)
+                    {
+                        this.name = name;
+                        this.age = age;
+                        this.job = job;
+
+                        this.sayName=function(){
+                            console.log(this.name);
+                        };
+                    }
+
+                    let person1 = new Person("Nicholas",29,"Software Engineer");
+                    let person2 = new Person("Greg",27,"Doctor");
+
+                    person1.sayName();
+                    person2.sayName();
+                }
+                //ConstructorModel();
+
+                //谁是函数的调用者
+                function WhoIsCaller()
+                {
+                    function Person()
+                    {
+                        console.log("this points to : ",this);
+                        this.name = "Jake";
+                        this.sayName = function(){
+                            console.log(this.name);
+                        };
+
+                        this.thisEquals = function(t){
+                            console.log(this===t);
+                        };
+                    }
+
+                    //new 在对象中创建了一个对象,并使用Person作为这个对象的类型名
+                    //然后这个对象调用了Person函数,并将自己作为this指针传入了函数
+                    //并将对象内部的[[Prootype]]特性赋值为Person的prototype属性
+                    //因此Person内的指针this指向这个新对象
+                    console.log("在new创建的对象中调用Person()函数:");
+                    let person = new Person("Nicholas",29,"Software Engineer");
+                    person.sayName();
+                    person.thisEquals(person); //true;
+                    console.log("");
+
+                    console.log("在创建的Object类型的对象obj中调用Person()函数:");
+                    let obj = new Object();
+                    //obj对象调用了Person函数
+                    //Person函数的this指向了obj对象
+                    Person.call(obj,"Kristen",25,"Nurse");
+                    obj.sayName();
+                    obj.thisEquals(obj); //true
+                    console.log("");
+
+                    //没有人调用Person,默认由Global对象调用,
+                    //Global对象在html中即是window对象
+                    //因此此时Person中的this指向global对象
+                    //Person中的this.name,this.sayName中自然也就把属性添加给了
+                    //global对象
+                    console.log("在全局对象中调用Person()函数:");
+                    Person();
+                    window.name = "window";
+                    window.sayName();
+                    window.thisEquals(window); //true;
+
+                    //===========总结================
+                    /*
+                        任何函数都可以看作是构造函数,如果我们使用new创建的对象
+                        或自己创建的对象调用,那么我们就是函数是对象的构造函数,
+                        如果直接调用,实际就是global对象调用了函数,那么函数也可以
+                        看作是global的构造函数,函数内的this指向global
+                    */
+                }
+                WhoIsCaller();
+            }
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

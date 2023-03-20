@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+            div.status{
+                height: 10px;
+                background-color: rgb(63, 139, 139);
+            }
+        </style>
+        <script>
+            function message(message,style)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+                //样式
+                if(style && typeof(style)==="object") //自定义样式
+                {
+                    for(key in style)
+                    {
+                        msgDiv.style[key] = style[key];
+                    }
+                }
+                else //默认样式
+                {
+                    msgDiv.style.fontSize = "14px";
+                    msgDiv.style.borderBottom = "solid 1px rgb(28,78,63)";
+                    msgDiv.style.padding = "2px";
+                }
+            }
+
+            function sleep(ms)
+            {
+                let start = Date.now();
+                let end = start+ms;
+                while(true)
+                {
+                    if(Date.now()>end)
+                    {
+                        return;
+                    }
+                }
+            }
+        </script>
+        <script>
+            window.addEventListener("load",WindowOnLoad);
+            function WindowOnLoad(event)
+            {
+                /* let div=document.getElementById("status");
+                div.style.width="0%";
+                console.log(div.style.width); */
+                
+                let div = document.getElementById("status");
+                div.style.width="0%";
+                function updateProgress()
+                {
+                    div.style.width=(parseInt(div.style.width,10)+5) + "%";
+                    if(div.style.width!="100%")
+                    {
+                        requestAnimationFrame(updateProgress);
+                    }
+                    console.log(div.style.width);
+                }
+                requestAnimationFrame(updateProgress);
+                console.log(div.style.width);
+            }
+        </script>
+    </head>
+    <body>
+        <div class="status" id="status"></div>
+    </body>
+</html>

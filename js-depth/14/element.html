@@ -3,15 +3,61 @@
     <head>
         <meta charset="utf-8">
         <title>Node-Element</title>
+        <style>
+            form{
+                margin-top: 20px;
+                border:1px solid rgba(112, 211, 181, 0.5)
+            }
+        </style>
     </head>
     <body>
         <div id="first">
             <div id="second"></div>
         </div>
+
+        <form method="post" id="myForm3">
+            <div>
+                <label>Please choose one or more pets:
+                    <select name="pets" multiple size="12">
+                      <optgroup label="4-legged pets" name="fourLegsPets">
+                        <option value="dog">Dog</option>
+                        <option value="cat">Cat</option>
+                        <option value="hamster" disabled>Hamster</option>
+                      </optgroup>
+                      <optgroup label="Flying pets" name="flyingPats">
+                        <option value="parrot">Parrot</option>
+                        <option value="macaw">Macaw</option>
+                        <option value="albatross">Albatross</option>
+                      </optgroup>
+                    </select>
+                  </label>
+            </div>
+            <div>
+                <div>Add New</div>
+                <label>Text</label><input type="text" name="optText">
+                <label>Value</label><input type="text" name="optValue">
+            </div>
+            <button type="submit">submit</button>
+            <button type="button" name="new">Add New</button>
+            <button type="button" name="optgrp">OptGroup</button>
+        </form>
     </body>
     <script>
-        let element = document.getElementById("first");
+        /* let element = document.getElementById("first");
         let id = element.attributes.getNamedItem("id").nodeValue;
-        console.log(id);
+        console.log(id); */
+
+        //form3 - OptGroup Button
+        let form3_OptGroupBtn = form3.elements["optgrp"];
+                form3_OptGroupBtn.addEventListener("click",(event)=>{
+                    let form = event.target.form;
+                    selectbox = form.elements["pets"];
+                    //console.log(selectbox);
+                    console.log(selectbox.nodeName); //SELECT
+                    console.log(selectbox.nodeType); //1
+                    //console.log(selectbox.childNodes);
+                    console.log(selectbox.childNodes.item(1).nodeType) //1
+                    console.log(selectbox.childNodes.item(1).getAttribute("label")); //4-legged pets
+                });
     </script>
 </html>

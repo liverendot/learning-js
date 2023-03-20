@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+            .myDiv{
+                width:200px;
+                height: 200px;
+                border: solid 1px rgb(67, 141, 201);
+            }
+        </style>
+        <script>
+            function message(message,style)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+                //样式
+                if(style && typeof(style)==="object") //自定义样式
+                {
+                    for(key in style)
+                    {
+                        msgDiv.style[key] = style[key];
+                    }
+                }
+                else //默认样式
+                {
+                    msgDiv.style.fontSize = "14px";
+                    msgDiv.style.borderBottom = "solid 1px rgb(28,78,63)";
+                    msgDiv.style.padding = "2px";
+                }
+            }
+        </script>
+        <script>
+            /* window.onload = ()=>
+            {
+                let div=document.getElementById("myDiv");
+                div.addEventListener("click",(event)=>{
+                    console.log(`Client coordinates: ${event.clientX},${event.clientY}`);
+                });
+            } */
+            window.addEventListener("load",WindowOnLoad);
+            function WindowOnLoad(event)
+            {
+                let div=document.getElementById("myDiv");
+                div.addEventListener("click",(event)=>{
+                    //console.log(`Client coordinates: ${event.clientX},${event.clientY}`);
+                    let keys=new Array();
+                    if(event.shiftKey)
+                    {
+                        keys.push("shift");
+                    }
+                    if(event.ctrlKey)
+                    {
+                        keys.push("ctrl");
+                    }
+                    if(event.altKey)
+                    {
+                        keys.push("alt");
+                    }
+                    if(event.metaKey)
+                    {
+                        keys.push("meta");
+                    }
+                    console.log(`Keys: ${keys.join(",")}`);
+                });
+                div.addEventListener("mouseout",(event)=>{
+                    //console.log(event);
+                    let target = event.target;
+                    let relatedTarget = EventUtil.getRelatedTarget(event);
+                    console.log(`Moused out of ${target.tagName} to ${relatedTarget.tagName}`);
+                });
+
+                document.addEventListener("mousewheel",(event)=>{
+                    console.log(`mousewheel: ${event.wheelDelta}`);
+                });
+            }
+            
+            var EventUtil = {
+                getRelatedTarget:function(event)
+                {
+                    if(event.relatedTarget)
+                    {
+                        return event.relatedTarget;
+                    }
+                    else if(event.toElement)
+                    {
+                        return event.toElement;
+                    }
+                    else if(event.fromElement)
+                    {
+                        return event.fromElement;
+                    }
+                }
+            };
+        </script>
+    </head>
+    <body>
+        <div class="myDiv" id="myDiv"></div>
+    </body>
+</html>

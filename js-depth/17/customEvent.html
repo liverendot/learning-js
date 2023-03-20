@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+            .myDiv{
+                height: 200px;
+                background-color: aquamarine;
+            }
+        </style>
+        <script>
+            function message(message,style)
+            {
+                //新建消息盒子节点,并添加到body
+                let msgDiv = document.createElement("div");
+                let textNode = document.createTextNode(`${message}`);
+                msgDiv.appendChild(textNode);
+                document.body.appendChild(msgDiv);
+                //样式
+                if(style && typeof(style)==="object") //自定义样式
+                {
+                    for(key in style)
+                    {
+                        msgDiv.style[key] = style[key];
+                    }
+                }
+                else //默认样式
+                {
+                    msgDiv.style.fontSize = "14px";
+                    msgDiv.style.borderBottom = "solid 1px rgb(28,78,63)";
+                    msgDiv.style.padding = "2px";
+                }
+            }
+        </script>
+        <script>
+            window.addEventListener("load",WindowOnLoad);
+            function WindowOnLoad(event)
+            {
+                let div = document.getElementById("myDiv");
+                div.addEventListener("myEvent",(event)=>{
+                    console.log("DIV: "+event.detail);
+                });
+                //事件冒泡
+                document.addEventListener("myEvent",(event)=>{
+                    console.log("DOCUMENT: "+event.detail);
+                });
+
+                if(document.implementation.hasFeature("CustomEvents","3.0"))
+                {
+                    e=document.createEvent("CustomEvent");
+                    e.initCustomEvent("myEvent",true,false,"hello world!");
+                    div.dispatchEvent(e); //触发自定义事件
+                }
+            }
+        </script>
+    </head>
+    <body>
+        <div class="myDiv" id="myDiv">myDiv</div>
+    </body>
+</html>

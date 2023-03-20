@@ -1,0 +1,1 @@
+console.log((/image/.test("image/png")));

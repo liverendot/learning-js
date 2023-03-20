@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>function和class</title>
+        <style>
+        </style>
+        <script>
+            function fc1()
+            {
+                /* function Person()
+                {
+                    this.name = "person aa";
+                }
+                let person = new Person();
+                console.log(person.__proto__);
+                let p = Person();
+                console.log(window.name); */
+
+                class Animal
+                {
+                    constructor(legs)
+                    {
+                        this.legs = legs;
+                    }
+                }
+                console.log(Animal.prototype);
+                console.log(Animal === Animal.prototype.constructor);
+                let a = new Animal();
+                console.log(a.__proto__ === Animal.prototype); //true
+                console.log(a instanceof Animal); //true
+            }
+            //fc1();
+
+            function fc2()
+            {
+                class Person{};
+                let p2 = new Person.constructor();
+                console.log(p2.constructor === Person); //false
+                console.log(p2.constructor === Person.constructor); //true
+                console.log(p2 instanceof Person); //false
+                console.log(p2 instanceof Person.constructor); //true
+            }
+            fc2();
+        </script>
+    </head>
+    <body>
+    </body>
+</html>
