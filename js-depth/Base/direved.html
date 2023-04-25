@@ -23,11 +23,12 @@
                     this.subproperty = false;
                 }
 
-                console.log("DerivedType.prototype DerivedType最初的原型(Object类型对象):");
-                console.log(DerivedType.prototype);
+                /* console.log("DerivedType.prototype DerivedType最初的原型(Object类型对象):");
+                console.log(DerivedType.prototype); */
 
-                DerivedType.prototype = new BaseType();
-                console.log("DerivedType.prototype DerivedType新的原型(BaseType类型的对象):");
+                DerivedType.prototype = new BaseType(); //实现继承
+
+                /* console.log("DerivedType.prototype DerivedType新的原型(BaseType类型的对象):");
                 console.log(DerivedType.prototype);
                 DerivedType.prototype.getSubValue = function(){
                     return this.subproperty;
@@ -47,9 +48,16 @@
                 console.log("derivedInstance.__proto__ === DerivedType.prototype:",derivedInstance.__proto__ === DerivedType.prototype);
                 console.log("DerivedType.prototype(new BaseType).__proto__ == BaseType.prototype:",
                             DerivedType.prototype.__proto__ === BaseType.prototype);
-                console.log(derivedInstance.__proto__);
+                console.log(derivedInstance.__proto__); */
+
+                let d = new DerivedType();
+                console.log(d.__proto__);
+                console.log(d.__proto__.constructor);
+                console.log(d.constructor);
+                let b = new BaseType();
+                console.log(b.constructor);
             }
-            //Derived();
+            Derived();
 
             function WhoIsThis()
             {

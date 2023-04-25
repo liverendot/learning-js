@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+        </style>
+        <script>
+            function demo1()
+            {
+                function timeout(ms)
+                {
+                    return new Promise((resolve,reject)=>{
+                        setTimeout(resolve,ms,"done");
+                    });
+                }
+
+                //timeout方法返回一个Promise实例，表示一段时间以后才会发生的结果。
+                //过了指定的时间（ms参数）以后，Promise实例的状态变为resolved，
+                //就会触发then方法绑定的回调函数
+                timeout(100).then((value)=>{
+                    console.log(value);
+                });
+            }
+            //demo1();
+
+            function demo2()
+            {
+                /**
+                 * 下面代码中
+                 * Promise 新建后立即执行，所以首先输出的是Promise。
+                 * 然后，then方法指定的回调函数，将在当前脚本所有同步任务执行完才会执行，
+                 * 所以resolved最后输出
+                 * */
+                let promise = new Promise(function(resolve,reject){
+                    console.log("Promise");
+                    resolve();
+                });
+
+                promise.then(function(){
+                    console.log("resolved!");
+                });
+
+                console.log("Hi!");
+            }
+            //demo2();
+
+            function demo3()
+            {
+                /**
+                 * 下面代码中，p1是一个 Promise，3 秒之后变为rejected。
+                 * p2的状态在 1 秒之后改变，resolve方法返回的是p1。
+                 * 由于p2返回的是另一个 Promise，导致p2自己的状态无效了，由p1的状态决定p2的状态。
+                 * 所以，后面的then语句都变成针对后者（p1）。又过了 2 秒，
+                 * p1变为rejected，导致触发catch方法指定的回调函数。
+                 * */
+                let p1 = new Promise(function(resolve,reject){
+                    setTimeout(()=>reject(new Error("fail")),3000);
+                });
+
+                let p2 = new Promise(function(resolve,reject){
+                    setTimeout(()=>resolve(p1),1000);
+                });
+
+                p2.then(result=>console.log(result))
+                    .catch(error=>console.log(error));
+            }
+            //demo3();
+
+            ////未捕获的错误
+            function demo4()
+            {
+                promise = new Promise(function(resolve,reject){
+                    resolve("Ok");
+                    setTimeout(function(){throw new Error("test")},0);
+                });
+
+                /**
+                 * Promise 指定在下一轮“事件循环”再抛出错误。
+                 * 到了那个时候，Promise 的运行已经结束了，
+                 * 所以这个错误是在 Promise 函数体外抛出的，
+                 * 会冒泡到最外层，成了未捕获的错误。
+                 * */
+                promise
+                    .then(function(value){console.log(value);})
+                    .catch(function(err){console.log(err)});
+            }
+            //demo4();
+
+            //可捕获的错误
+            function demo5()
+            {
+                promise = new Promise(function(resolve,reject){
+                    //resolve("Ok");
+                    //setTimeout(function(){throw new Error("test")},0);
+                    setTimeout(function(){reject(new Error("test"));},0);
+                });
+                //promise.catch(err=>console.log(err));
+
+                promise
+                    .then(function(value){console.log(value);})
+                    .catch(function(err){console.log(err)});
+            }
+            //demo5();
+
+            //异步抛出的异常
+            function demo6()
+            {
+                /**
+                 * 异步抛出的异常在外层不能被捕获,
+                 * 应当使用promise.catch()语句
+                 * */
+                try{
+                    const asyncFuncOne = function(){
+                        return new Promise(function(resolve,reject){
+                            //该行会报错,因为x未声明
+                            resolve(x+2);
+                        });
+                    }
+
+                    asyncFuncOne().then(function(){console.log("come on!");});
+                }
+                catch(e)
+                {
+                    console.log(e);
+                }
+            }
+            //demo6();
+
+            //立即resolve()的 Promise 对象，是在本轮“事件循环”（event loop）的结束时执行，
+            //而不是在下一轮“事件循环”的开始时
+            function demo7()
+            {
+                setTimeout(function(){
+                    console.log("three");
+                },0);
+
+                Promise.resolve().then(function(){
+                    console.log("two");
+                });
+
+                console.log("one");
+            }
+            //demo7();
+
+            //Generator与Promise的结合
+            function demo8()
+            {
+                function getFoo()
+                {
+                    return new Promise(function(resolve,reject){
+                        resolve("foo");
+                    });
+                }
+
+                const g = function*(){
+                    try
+                    {
+                        const foo = yield getFoo();
+                        console.log(foo);
+                    }
+                    catch(e)
+                    {
+                        console.log(e);
+                    }
+                };
+
+                /* let generator = g();
+                console.log(generator.next("a"));//{value:Promise,done:false}
+                console.log(generator.next("a"));
+                console.log(generator.next()); */
+                //generator.next("a"); generator.next("a");
+
+                function run(generator)
+                {
+                    const it = generator(); //=g();
+                    function go(result)
+                    {
+                        if(result.done) return result.value;
+                        return result.value.then(function(value){
+                            return go(it.next(value));
+                        },function(error){
+                            return go(it.throw(error));
+                        });
+                    }
+                    go(it.next());
+                }
+
+                run(g);
+            }
+            demo8();
+            
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

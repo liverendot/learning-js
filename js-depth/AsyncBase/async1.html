@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+            div.square{
+                width:100px;
+                height:100px;
+                background-color: blueviolet;
+            }
+        </style>
+        <script>
+            function demo1()
+            {
+                function async(arg,callback)
+                {
+                    console.log("参数为" + arg + ", 1秒后返回结果");
+                    setTimeout(function(){callback(arg*2);},1000);
+                }
+
+                function final(value)
+                {
+                    console.log("Completed: ",value);
+                }
+
+                //6个异步函数依次执行完才执行final函数
+                async(1,function(value){
+                    async(2,function(value){
+                        async(3,function(value){
+                            async(4,function(value){
+                                async(5,function(value){
+                                    async(6,final);
+                                });
+                            });
+                        });
+                    });
+                });
+
+                //async(6,final);
+            }
+            //demo1();
+
+
+            //串行执行
+            function demo2()
+            {
+                let items = [1,2,3,4,5,6];
+                let results = [];
+
+                //执行1秒的异步函数
+                function async(arg,callback)
+                {
+                    console.log("参数为 "+arg+", 1秒后返回结果");
+                    setTimeout(function(){callback(arg*2);},1000);
+                }
+
+                //异步完成后要执行的函数
+                function final(value)
+                {
+                    console.log("完成: ",value);
+                }
+
+                function series(item)
+                {
+                    if(item)
+                    {
+                        async(item,function(result){
+                            results.push(result);
+                            return series(items.shift());
+                        });
+                    }
+                    else
+                    {
+                        return final(results[results.length-1]);
+                    }
+                }
+
+                //shift()类似于c#中集合的popup(),只是从低索引弹出
+                series(items.shift());
+            }
+            //demo2();
+
+            //并行执行
+            function demo3()
+            {
+                let items = [1,2,3,4,5,6];
+                let results = [];
+
+                function async(arg,callback)
+                {
+                    console.log("参数为: "+arg+" ,1秒后返回结果");
+                    setTimeout(function(){callback(arg*2);},1000);
+                }
+
+                function final(value)
+                {
+                    console.log("完成: ",value);
+                }
+
+                //forEach()会同时发起所有的异步任务
+                //1次可以执行所有异步任务
+                items.forEach(function(item){
+                    async(item,function(result){
+                        results.push(result);
+                        if(results.length === items.length)
+                        {
+                            final(results[results.length-1]);
+                        }
+                    });
+                });
+            }
+            //demo3();
+
+            //串行并行结合
+            function demo4()
+            {
+                let items = [1,2,3,4,5,6];
+                let results = [];
+                let running = 0;
+                let limit = 2;
+
+                function async(arg,callback)
+                {
+                    console.log("参数为: "+arg+" ,1秒后返回结果");
+                    setTimeout(function(){callback(arg*2);},1000);
+                }
+
+                function final(value)
+                {
+                    console.log("完成: ",value);
+                }
+
+                function launcher()
+                {
+                    while(running<limit && items.length>0)
+                    {
+                        let item = items.shift(); //取出一项
+                        async(item,function(result){
+                            results.push(result);
+                            console.log("while: "+running);
+                            running--; //表示完成了其中一个任务
+                            if(items.length>0) //如果items还有内容,紧接着再开启一个任务
+                            {
+                                launcher();
+                            }
+                            else if(running==0) //直到running个任务都完成
+                            {
+                                final(results);
+                            }
+                        });
+
+                        console.log("launcher: "+running);
+                        running++; //表示在启动1个任务,直到任务数量为limit上限
+                    }
+                }
+
+                launcher();
+            }
+            //demo4();
+
+            //setTimeout
+            function demo5()
+            {
+                /* console.log(1);
+                setTimeout("console.log(2)",1000);
+                console.log(3); */
+
+                //let x=1;
+                x=1; //如果参数未经声明就初始化了,那么他就会被自动添加到全局上下文(window)
+                console.log(window.x);
+                let obj = {
+                    x:2,
+                    y:function(){
+                        console.log(this==window); //true
+                        console.log(this.x);
+                    }
+                };
+                setTimeout(obj.y,1000);
+            }
+            //demo5();
+
+            // setInterval()
+            function demo6()
+            {
+                let div = document.getElementById("somediv");
+                let opacity =1;
+                let fader = setInterval(function(){
+                    opacity -= 0.1;
+                    if(opacity>=0)
+                    {
+                        div.style.opacity = opacity;
+                    }
+                    else
+                    {
+                        clearInterval(fader);
+                    }
+                },100);
+            }
+            //window.addEventListener("load",demo6);
+
+            //id
+            //setInterval和setTimeout之间的id也是连续的
+            function demo7()
+            {
+                function f(){}
+                id1 = setTimeout(f,2000);
+                id2 = setTimeout(f,2000);
+                id3 = setInterval(f,2000);
+                console.log(`id1:${id1}, id2:${id2}, id3:${id3}`); //1,2,3
+                clearTimeout(id1);
+                clearTimeout(id2);
+                clearInterval(id3);
+            }
+            //demo7();
+
+            function demo8()
+            {
+                let div = document.getElementsByTagName("div")[0];
+                if(div)
+                {
+                    let timer;
+                    let i=0x100000;
+                    function func()
+                    {
+                        timer = setTimeout(func,0);
+                        //console.log(timer);
+                        div.style.backgroundColor = "#"+i.toString(16);
+                        console.log(i);
+                        if(i++ == 0xFFFFFF) clearTimeout(timer);
+                    }
+                    timer = setTimeout(func,0);
+                }
+                else
+                {
+                    console.log(div);
+                }
+            }
+            //window.addEventListener("load",demo8);
+            
+        </script>
+    </head>
+    <body>
+        <div>
+            <div class="square" id="somediv"></div>
+        </div>
+    </body>
+</html>

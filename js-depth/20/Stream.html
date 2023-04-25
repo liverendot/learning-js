@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+        </style>
+        <script>
+            function stream1()
+            {
+                async function * ints()
+                {
+                    for(let i=0;i<5;++i)
+                    {
+                        yield await new Promise((resolve)=>setTimeout(resolve,1000,i));
+                    }
+                }
+
+            }
+            //stream1();
+
+            //可写流
+            function stream2()
+            {
+                async function * ints()
+                {
+                    for(let i=0;i<5;i++)
+                    {
+                        yield await new Promise((resolve)=>setTimeout(resolve,1000,i));
+                    }
+                }
+
+                let i = ints();
+                //console.log(i);
+                //console.log(i.return());
+                //console.log(i.next());
+                //i.next().then(value=>console.log(value));
+                //i.next().then(value=>console.log(value));
+
+                /**
+                 * 如果你遇到了 
+                 * SyntaxError: for await (... of ...) 
+                 * is only valid in async functions and async generators 错误，
+                 * 那是因为 for-await-of 只能在 async 函数或者 async 生成器里面使用
+                 * **/
+                (async function(){
+                    for await (const result of i)
+                    {
+                        console.log(result);
+                    }
+                })();
+            }
+            stream2();
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>代理</title>
+        <style>
+        </style>
+        <script>
+            function px1()
+            {
+                const target = {foo:"bar",baz:"bbb"}; //目标对象
+                const handler = { //处理器对象
+                    get(trapTarget,property,receiver)
+                    {
+                        console.log(trapTarget === target); //捕获的目标
+                        console.log(property); //捕获的属性
+                        console.log(receiver === proxy); //代理
+                        return trapTarget[property]; //返回捕获到的目标对象的属性
+                    }
+                };
+                const proxy = new Proxy(target,handler); //代理
+
+                //任何对属性的get()调用,都会被代理get()捕获器捕获
+                //proxy.foo;
+                //proxy.baz;
+                
+                console.log(proxy.foo);
+                console.log(proxy.baz);
+            }
+            //px1();
+
+            function px2()
+            {
+                const target = {foo:"bar", baz:"qux"};
+
+                const handler = {
+                    get(trapTarget,property,receiver)
+                    {
+                        //console.log(receiver);
+                        //console.log(Reflect);
+                        let decoration = "";
+                        if(property==="foo")
+                        {
+                            decoration = "!!!";
+                        }
+                        return trapTarget[property]+decoration;
+                    }
+                };
+
+                const proxy = new Proxy(target,handler);
+
+                console.log(target.foo);
+                console.log(proxy.foo);
+            }
+            //px2();
+
+            function px3()
+            {
+                const wm = new WeakMap();
+
+                class User
+                {
+                    constructor(userId)
+                    {
+                        wm.set(this,userId);
+                    }
+
+                    set id(userId)
+                    {
+                        wm.set(this,userId);
+                    }
+
+                    get id()
+                    {
+                        return wm.get(this);
+                    }
+                }
+
+                const user = new User(123);
+                console.log(user.id);
+
+                /* const userInstanceProxy = new Proxy(user,{});
+                //const proxyUser = new userInstanceProxy(456);
+                console.log(userInstanceProxy.id); */
+
+                /* const userInstanceProxy = new Proxy(User,{});
+                console.log(userInstanceProxy.id); */
+            }
+            px3();
+        </script>
+    </head>
+    <body>
+    </body>
+</html>

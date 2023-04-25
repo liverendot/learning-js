@@ -41,7 +41,92 @@
                 console.log(p2 instanceof Person); //false
                 console.log(p2 instanceof Person.constructor); //true
             }
-            fc2();
+            //fc2();
+
+            function fc3()
+            {
+                class Vehicle
+                {
+                    identifyPrototype(id)
+                    {
+                        console.log(id,this);
+                    }
+
+                    static identifyClass(id)
+                    {
+                        console.log(id,this);
+                    }
+                }
+
+                class Bus extends Vehicle{}
+
+                let v = new Vehicle();
+                let b = new Bus();
+                b.identifyPrototype("bus");
+                v.identifyPrototype("vehicle");
+
+                Bus.identifyClass("bus");
+                Vehicle.identifyClass("vehicle");
+            }
+            //fc3();
+
+            function fc4()
+            {
+                class Vehicle
+                {
+                    constructor()
+                    {
+                        this.hasEngine = true;
+                    }
+                }
+
+                class Bus extends Vehicle
+                {
+                    constructor()
+                    {
+                        super(); //super.constructor()
+                        console.log(this instanceof Vehicle);
+                        console.log(this);
+                    }
+                }
+
+                new Bus();
+            }
+            //fc4();
+
+            function fc5()
+            {
+                class Vehicle
+                {
+                    constructor()
+                    {
+                        console.log("Vehicle this ->: ",this);
+                    }
+                }
+
+                class Bus extends Vehicle
+                {
+                    constructor()
+                    {
+                        super();
+                        console.log("Bus this ->: ",this);
+                    }
+                }
+
+                let bus = new Bus();
+                let v = new Vehicle();
+                /* console.log(Bus.prototype);
+                console.log(bus.__proto__);
+                console.log(bus.__proto__ === Bus.prototype); //true
+                console.log(bus.__proto__.constructor);
+                console.log(bus instanceof Bus); */
+                /* console.log(bus.__proto__);
+                console.log(bus.__proto__.__proto__);
+                console.log(bus.__proto__.__proto__.__proto__); */
+                console.log(bus.__proto__.constructor);
+                console.log(v.constructor);
+            }
+            fc5();
         </script>
     </head>
     <body>

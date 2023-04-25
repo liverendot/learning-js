@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+        </style>
+        <script>
+            function demo1()
+            {
+                //console.log(document.querySelector("#foo").content);
+                const fragment = document.querySelector("#foo").content;
+                console.log(document.querySelector("p"));
+                console.log(fragment.querySelector("p"));
+            }
+            window.addEventListener("load",demo1);
+        </script>
+    </head>
+    <body>
+        <template id="foo">
+            <p>I'm inside a template!</p>
+        </template>
+    </body>
+</html>

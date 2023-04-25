@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+        </style>
+        <script>
+            function demo1()
+            {
+                document.body.innerHTML=`
+                    <div id="foo">foo</div>
+                    <div id="bar">bar</div>
+                `;
+
+                const foo = document.querySelector("#foo");
+                const bar = document.querySelector("#bar");
+
+                const openShadowDOM = foo.attachShadow({mode:"open"});
+                const closedShadowDOM = bar.attachShadow({mode:"closed"});
+
+                /* console.log(openShadowDOM);
+                console.log(closedShadowDOM);
+
+                console.log(foo.shadowRoot);
+                console.log(bar.shadowRoot); */
+            }
+            //window.addEventListener("load",demo1);
+
+            //使用影子DOM
+            function demo2()
+            {
+                /**
+                 * 虽然这里使用相同的选择符P{}应用了3中不同的颜色
+                 * 但每个选择符只会把样式应用到它们所在的影子DOM上
+                 * */
+                for(let color of ['red','green','blue'])
+                {
+                    const div = document.createElement("div");
+                    const shadowDOM = div.attachShadow({mode:"open"});
+
+                    document.body.appendChild(div);
+                    shadowDOM.innerHTML = `
+                        <p>Make me ${color}</p>
+                        <style>
+                            p{
+                                color:${color}
+                            }
+                        </style>
+                    `;
+                }
+            }
+            //window.addEventListener("load",demo2);
+
+            //使用slot槽位
+            function demo3()
+            {
+                for(let color of ["red","green","blue"])
+                {
+                    const divElement = document.createElement("div");
+                    divElement.innerText = `Make me ${color}`;
+                    document.body.appendChild(divElement);
+
+                    //slot表示divElement元素中的原来的内容
+                    divElement.attachShadow({mode:"open"})
+                        .innerHTML = `
+                        <p><slot></slot></p>
+                        <style>
+                            p{color:${color};}
+                        </style>
+                        `;
+                }
+            }
+            window.addEventListener("load",demo3);
+        </script>
+    </head>
+    <body>
+        <div>
+            <p>Make me red!</p>
+        </div>
+        <div>
+            <p>Make me blue!</p>
+        </div>
+        <div>
+            <p>Make me green!</p>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>模板</title>
+        <style>
+        </style>
+        <script>
+            //next
+            function demo1()
+            {
+                function makeIterator(array)
+                {
+                    let nextIndex = 0;
+                    return {
+                        next: function(){
+                            return nextIndex < array.length?
+                                {value:array[nextIndex++],done:false}:
+                                {value:undefined,done:true};
+                        }
+                    };
+                }
+
+                let test = makeIterator(["x","y"]);
+                console.log(test.next());
+                console.log(test.next());
+                console.log(test.next());
+            }
+            //demo1();
+
+            //对于遍历器对象来说，done: false和value: undefined属性都是可以省略的，
+            //因此上面的makeIterator函数可以简写成下面的形式：
+            function makeIterator(array)
+            {
+                let nextIndex = 0;
+                return {
+                    next: function(){
+                        return nextIndex < array.length ?
+                        {value:array[nextIndex++]} : {done:true};
+                    }    
+                };
+            }
+
+            //一些数据结构默认的迭代器[Symbol.iterator]属性
+            //Array, Map, Set, String, TypedArray, arguments, NodeList
+            function demo2()
+            {
+                let arr=["x","y","z"];
+                let iter = arr[Symbol.iterator]();
+                console.log(iter.next());
+                console.log(iter.next());
+                console.log(iter.next());
+                console.log(iter.next());
+            }
+            //demo2();
+
+            //为类似数组的对象定义迭代器属性有一个简便方法，
+            //就是Symbol.iterator方法直接引用数组的 Iterator 接口
+            //类似数组的对象:存在数值键名和length属性
+            function demo3()
+            {
+                let iterable = {
+                    0:"x",
+                    1:"y",
+                    2:"z",
+                    length:3,
+                    [Symbol.iterator]:Array.prototype[Symbol.iterator]
+                };
+
+                for(let item of iterable)
+                {
+                    console.log(item);
+                }
+            }
+            //demo3();
+
+            // 调用Iterator接口的场合
+            function demo4()
+            {
+                //(1) 结构赋值
+                let set = new Set().add("x").add("y").add("z");
+                let [x,y] = set;
+                console.log(x,y); //x y
+                let [first,...rest] = set;
+                console.log(first,rest); //x [y,z]
+
+                //(2) 扩展运算符...
+                let str="hello";
+                console.log([...str]);
+                arr = ["t","s"];
+                console.log(["u",...arr,"r"]);
+
+                //(3)yield*后面跟的是一个可遍历的结构，它会调用该结构的遍历器接口
+                let generator = function*(){
+                    yield 1;
+                    yield* [2,3,4];
+                    yield 5;
+                };
+                let iter = generator();
+                for(i of iter)
+                {
+                    console.log(i);
+                }
+            }
+            //demo4();
+
+            //对于字符串来说，for...of循环还有一个特点，
+            //是会正确识别 32 位 UTF-16 字符
+            function demo5()
+            {
+                for (let x of "a\uD83D\uDC0A")
+                console.log(x);
+            }
+            demo5();
+        </script>
+    </head>
+    <body>
+    </body>
+</html>
